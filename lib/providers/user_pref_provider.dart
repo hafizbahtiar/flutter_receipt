@@ -15,6 +15,7 @@ class UserPrefsProvider extends ChangeNotifier {
   // Initialize provider by loading values from SharedPreferences
   Future<void> initialize() async {
     _isDarkMode = await _getDarkModeFromPrefs();
+       debugPrint('Dark mode: $_isDarkMode');
     _languageCode = await _getLanguageCodeFromPrefs();
     notifyListeners();
   }
@@ -38,6 +39,7 @@ class UserPrefsProvider extends ChangeNotifier {
 
   // SharedPreferences helpers
   Future<void> _saveDarkModeToPrefs(bool value) async {
+    debugPrint('Saving dark mode: $value');
     await prefs?.setBool(PrefsName.isDarkMode, value);
   }
 

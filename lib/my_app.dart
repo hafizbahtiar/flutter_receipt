@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_receipt/modules/home/home_page.dart';
 import 'package:flutter_receipt/config/themes/app_theme.dart';
+import 'package:flutter_receipt/modules/splash_page.dart';
 import 'package:flutter_receipt/providers/user_pref_provider.dart';
+import 'package:flutter_receipt/routes/generate_rote.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatefulWidget {
@@ -13,7 +14,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();
@@ -35,7 +35,9 @@ class _MyAppState extends State<MyApp> {
       theme: appThemeData(context, false),
       darkTheme: appThemeData(context, true),
       themeMode: prefsWatch.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      home: const MyHomePage(),
+      home: SplashPage(),
+      initialRoute: '/',
+      onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings),
     );
   }
 }

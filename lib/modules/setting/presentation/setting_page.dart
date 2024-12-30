@@ -60,12 +60,9 @@ class SettingPage extends StatelessWidget {
   }
 
   Widget _buildLanguageDropdown(BuildContext context) {
-    final prefsProvider = Provider.of<UserPrefsProvider>(context, listen: false);
-    final prefsWatch = Provider.of<UserPrefsProvider>(context);
-
     return DropdownButton<String>(
-      value: prefsWatch.languageCode,
-      onChanged: (value) => prefsProvider.setLanguageCode(value!),
+      value: Provider.of<UserPrefsProvider>(context).languageCode,
+      onChanged: (value) => Provider.of<UserPrefsProvider>(context, listen: false).setLanguageCode(value!),
       items: {'ms': 'Bahasa Melayu', 'en': 'English'}
           .entries
           .map((entry) => DropdownMenuItem<String>(
