@@ -1,6 +1,21 @@
 {
     "@@locale": "ms",
     "helloWorld": "Hello Dunia!",
+    "@helloWorld": {},
     "language": "Bahasa",
-    "add": "Tambah"
+    "@language": {},
+    "add": "Tambah",
+    "@add": {},
+    "article": "Artikel",
+    "@article": {},
+    "back": "Kembali",
+    "@back": {},
+    "setting": "Tetapan",
+    "@setting": {},
+    "darkMode": "Mod Gelap",
+    "@darkMode": {},
+    "activate": "Aktifkan",
+    "@activate": {},
+    "deactivate": "Nyahaktifkan",
+    "@deactivate": {}
 }

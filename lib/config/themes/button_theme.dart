@@ -56,7 +56,7 @@ TextButtonThemeData textButtonTheme(bool isDarkMode) {
   return TextButtonThemeData(
     style: TextButton.styleFrom(
       foregroundColor: isDarkMode ? AppPallete.primaryDark : AppPallete.primaryLight,
-      textStyle:  TextStyle(
+      textStyle: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
         color: isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight,
@@ -81,8 +81,7 @@ RoundedRectangleBorder _roundedRectangleBorder() {
 TextStyle _textStyle(bool isDarkMode) {
   return TextStyle(
     fontSize: 16,
-    fontWeight: FontWeight.bold,
-    color: isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight,
+    fontWeight: FontWeight.bold
   );
 }
 

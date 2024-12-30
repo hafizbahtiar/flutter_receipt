@@ -6,7 +6,7 @@ class UserPrefsProvider extends ChangeNotifier {
 
   // Default initial settings
   bool _isDarkMode = false;
-  String _languageCode = 'en'; // Default to English
+  String _languageCode = 'ms'; // Default to English
 
   // Getters
   bool get isDarkMode => _isDarkMode;
@@ -50,6 +50,6 @@ class UserPrefsProvider extends ChangeNotifier {
   }
 
   Future<String> _getLanguageCodeFromPrefs() async {
-    return prefs?.getString(PrefsName.languageCode) ?? 'en'; // Default to 'en'
+    return prefs?.getString(PrefsName.languageCode) ?? 'ms';
   }
 }

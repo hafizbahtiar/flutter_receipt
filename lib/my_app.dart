@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_receipt/home_page.dart';
+import 'package:flutter_receipt/modules/home/home_page.dart';
 import 'package:flutter_receipt/config/themes/app_theme.dart';
 import 'package:flutter_receipt/providers/user_pref_provider.dart';
 import 'package:provider/provider.dart';
