@@ -1,58 +1,70 @@
 import 'dart:convert';
 
-class CategoryModel {
+class TransactionRecordModel {
   final int? id;
-  final int? parentId;
+  final int categoryId;
   final int transactionTypeId;
   final String transactionTypeName;
   final String name;
+  final double amount;
+  final String? description;
   final String? createdAt;
 
-  CategoryModel({
+  TransactionRecordModel({
     this.id,
-    this.parentId,
+    required this.categoryId,
     required this.transactionTypeId,
     required this.transactionTypeName,
     required this.name,
+    required this.amount,
+    this.description,
     this.createdAt,
   });
 
-  CategoryModel copyWith({
+  TransactionRecordModel copyWith({
     int? id,
-    int? parentId,
+    int? categoryId,
     int? transactionTypeId,
     String? transactionTypeName,
     String? name,
+    double? amount,
+    String? description,
     String? createdAt,
   }) =>
-      CategoryModel(
+      TransactionRecordModel(
         id: id ?? this.id,
-        parentId: parentId ?? this.parentId,
+        categoryId: categoryId ?? this.categoryId,
         transactionTypeId: transactionTypeId ?? this.transactionTypeId,
         transactionTypeName: transactionTypeName ?? this.transactionTypeName,
         name: name ?? this.name,
+        amount: amount ?? this.amount,
+        description: description ?? this.description,
         createdAt: createdAt ?? this.createdAt,
       );
 
-  factory CategoryModel.fromRawJson(String str) => CategoryModel.fromJson(json.decode(str));
+  factory TransactionRecordModel.fromRawJson(String str) => TransactionRecordModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
+  factory TransactionRecordModel.fromJson(Map<String, dynamic> json) => TransactionRecordModel(
         id: json["id"],
-        parentId: json["parent_id"],
+        categoryId: json["category_id"],
         transactionTypeId: json["transaction_type_id"],
-        transactionTypeName: json["transaction_type_name"] ?? '',
-        name: json["name"] ?? '',
+        transactionTypeName: json["transaction_type_name"],
+        name: json["name"],
+        amount: json["amount"]?.toDouble(),
+        description: json["description"] ?? '',
         createdAt: json["created_at"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "parent_id": parentId,
+        "category_id": categoryId,
         "transaction_type_id": transactionTypeId,
         "transaction_type_name": transactionTypeName,
         "name": name,
+        "amount": amount,
+        "description": description,
         "created_at": createdAt,
       };
 }

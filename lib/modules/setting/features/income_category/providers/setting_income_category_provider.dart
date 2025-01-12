@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_receipt/data/models/category_model.dart';
-import 'package:flutter_receipt/data/repository/income_category_repository.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_receipt/data/models/transaction_type_model.dart';
+import 'package:flutter_receipt/data/repository/category_repository.dart';
+import 'package:flutter_receipt/data/repository/transaction_type_repository.dart';
 
 class SettingIncomeCategoryProvider with ChangeNotifier {
-  final IncomeCategoryRepository _repository = IncomeCategoryRepository();
+  final CategoryRepository _repository = CategoryRepository();
+  final TransactionTypeRepository _transactionRepository = TransactionTypeRepository();
 
   List<CategoryModel> _incomeCategories = [];
   bool _isLoading = false;
   int? selectedParentCategory;
+  TransactionTypeModel? _transactionType;
   String _categoryName = '';
   List<CategoryModel> parentCategories = [];
 
@@ -18,48 +21,43 @@ class SettingIncomeCategoryProvider with ChangeNotifier {
   Future<void> init() async {
     setLoading(true);
     await fetchIncomeCategories();
+    await fetchTransactionType();
     setLoading(false);
   }
 
   Future<void> fetchIncomeCategories() async {
-    _incomeCategories = await _repository.getAllIncomeCategories();
+    _incomeCategories = await _repository.getAllCategoriesByTransactionTypeName('income');
+    notifyListeners();
+  }
+
+  Future<void> fetchTransactionType() async {
+    _transactionType = await _transactionRepository.getTransactionTypeByName('income');
     notifyListeners();
   }
 
   Future<bool> addIncomeCategory() async {
-    if (_categoryName.isEmpty) {
-      // Validation: Category name should not be empty
-      return false;
-    }
-
+    if (_categoryName.isEmpty) return false;
     setLoading(true);
-
-    // Ensure parentId is not null, if it's null, set it to 0 (or your default value)
-    final category = CategoryModel(
+    final categoryId = await _repository.createCategory(
       name: _categoryName,
-      parentId: selectedParentCategory ?? 0, // Use the default value if null
-      createdAt: DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+      transactionTypeId: _transactionType!.id,
+      transactionTypeName: _transactionType!.name,
     );
-
-    try {
-      final success = await _repository.addIncomeCategory(category);
-      setLoading(false);
-      return success;
-    } catch (e) {
-      debugPrint("Error adding income category: $e");
-      setLoading(false);
-      return false;
-    }
+    setLoading(false);
+    return categoryId > 0;
   }
 
-  Future<bool> updateIncomeCategory(CategoryModel category) async {
-    category = category.copyWith(name: _categoryName);
-    final result = await _repository.updateIncomeCategory(category);
-    return result;
+  Future<bool> updateIncomeCategory(int id) async {
+    final result = await _repository.updateCategory(
+      id: id,
+      name: _categoryName,
+    );
+    return result > 0;
   }
 
   Future<bool> deleteIncomeCategory(int id) async {
-    return await _repository.deleteIncomeCategory(id);
+    final result = await _repository.deleteCategory(id);
+    return result > 0;
   }
 
   void setLoading(bool value) {

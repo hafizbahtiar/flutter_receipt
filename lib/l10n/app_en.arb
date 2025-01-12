@@ -29,6 +29,7 @@
     "none": "None",
     "mode": "Mode",
     "tax": "Tax",
+    "transaction": "Transaction",
     "income": "Income",
     "incomeCategory": "Income Category",
     "expenses": "Expenses",

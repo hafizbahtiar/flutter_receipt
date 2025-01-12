@@ -31,11 +31,11 @@ class HomeProvider with ChangeNotifier {
 
   /// Initialize the provider by fetching all income records
   Future<void> init() async {
-    setLoading(true);
-    await fetchAllIncome();
-    await fetchCategories();
-    setLoading(false);
-    notifyListeners();
+    // setLoading(true);
+    // await fetchAllIncome();
+    // await fetchCategories();
+    // setLoading(false);
+    // notifyListeners();
   }
 
   /// Fetch all income records

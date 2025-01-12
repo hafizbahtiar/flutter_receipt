@@ -16,7 +16,6 @@ class HomeAddPage extends StatefulWidget {
 class _HomeAddPageState extends State<HomeAddPage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -29,12 +28,6 @@ class _HomeAddPageState extends State<HomeAddPage> {
     super.dispose();
   }
 
-  void _onSegmentSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -42,7 +35,7 @@ class _HomeAddPageState extends State<HomeAddPage> {
       child: Consumer<HomeAddProvider>(
         builder: (BuildContext context, HomeAddProvider provider, Widget? child) {
           return Scaffold(
-            appBar: _buildAppBar(context),
+            appBar: _buildAppBar(context, provider),
             body: _buildBody(context, provider),
           );
         },
@@ -50,7 +43,7 @@ class _HomeAddPageState extends State<HomeAddPage> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, HomeAddProvider provider) {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.primary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -61,7 +54,7 @@ class _HomeAddPageState extends State<HomeAddPage> {
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
-        '${AppLocalizations.of(context)!.add} ${_selectedIndex == 0 ? AppLocalizations.of(context)!.income : AppLocalizations.of(context)!.expenses}',
+        '${AppLocalizations.of(context)!.add} ${provider.transactionTypeMap[provider.selectedIndex] == 'income' ? AppLocalizations.of(context)!.income : AppLocalizations.of(context)!.expenses}',
         style: Theme.of(context).textTheme.titleLarge!.copyWith(
               color: Theme.of(context).colorScheme.onPrimary,
               fontWeight: FontWeight.bold,
@@ -81,26 +74,20 @@ class _HomeAddPageState extends State<HomeAddPage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: _buildSegmentButton(
-                      label: AppLocalizations.of(context)!.income,
-                      index: 0,
-                      isSelected: _selectedIndex == 0,
-                      onPressed: () => _onSegmentSelected(0),
+              Wrap(
+                spacing: 10.0,
+                children: [
+                  if (provider.transactionType != null && provider.transactionType!.isNotEmpty)
+                    ...provider.transactionType!.map(
+                      (item) {
+                        return _buildSegmentButton(
+                          label: AppLocalizations.of(context)!.income,
+                          index: item.id,
+                          isSelected: provider.selectedIndex == item.id,
+                          onPressed: () => provider.setSelectedIndex(item.id),
+                        );
+                      },
                     ),
-                  ),
-                  SizedBox(width: 5.0),
-                  Expanded(
-                    child: _buildSegmentButton(
-                      label: AppLocalizations.of(context)!.expenses,
-                      index: 1,
-                      isSelected: _selectedIndex == 1,
-                      onPressed: () => _onSegmentSelected(1),
-                    ),
-                  ),
                 ],
               ),
               SizedBox(height: 20.0),
@@ -159,10 +146,16 @@ class _HomeAddPageState extends State<HomeAddPage> {
               ),
               const SizedBox(height: 10.0),
               MyDropdown(
-                onSelected: (value) => provider.setSelectedCategoryId(value!),
-                selectedValue: provider.selectedCategoryId,
+                onSelected: (value) => provider.transactionTypeMap[provider.selectedIndex] == 'income'
+                    ? provider.setSelectedIncomeCategoryId(value!)
+                    : provider.setSelectedExpensesCategoryId(value!),
+                selectedValue: provider.transactionTypeMap[provider.selectedIndex] == 'income'
+                    ? provider.selectedIncomeCategoryId
+                    : provider.selectedExpensesCategoryId,
                 label: AppLocalizations.of(context)!.category,
-                items: provider.incomeCategoriesMap.map((key, value) => MapEntry(key.toString(), value)),
+                items: provider.transactionTypeMap[provider.selectedIndex] == 'income'
+                    ? provider.incomeCategoriesMap.map((key, value) => MapEntry(key.toString(), value))
+                    : provider.expensesCategoriesMap.map((key, value) => MapEntry(key.toString(), value)),
               ),
               const SizedBox(height: 10.0),
               SizedBox(
@@ -177,7 +170,7 @@ class _HomeAddPageState extends State<HomeAddPage> {
                     padding: EdgeInsets.symmetric(vertical: 14.0),
                   ),
                   onPressed: () async {
-                    if (_selectedIndex == 0) {
+                    if (provider.transactionTypeMap[provider.selectedIndex] == 'income') {
                       final isSuccess = await provider.addIncome();
                       if (isSuccess && context.mounted) Navigator.pop(context, isSuccess);
                     }
@@ -198,17 +191,22 @@ class _HomeAddPageState extends State<HomeAddPage> {
     required bool isSelected,
     required VoidCallback onPressed,
   }) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
-        foregroundColor: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+    return SizedBox(
+      width: MediaQuery.sizeOf(context).width / 2 - 21.0,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
+          foregroundColor:
+              isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          padding: EdgeInsets.symmetric(
+            vertical: 15.0,
+            horizontal: 10.0,
+          ),
         ),
-        padding: EdgeInsets.symmetric(vertical: 14.0),
+        onPressed: onPressed,
+        child: Text(label),
       ),
-      onPressed: onPressed,
-      child: Text(label),
     );
   }
 }

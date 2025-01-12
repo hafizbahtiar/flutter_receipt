@@ -48,6 +48,8 @@
     "@none": {},
     "mode": "Mod",
     "@mode": {},
+    "transaction": "Transaksi",
+    "@transaction": {},
     "tax": "Cukai",
     "@tax": {},
     "income": "Pendapatan",

@@ -55,7 +55,7 @@ class _SettingExpensesCategoryPageState extends State<SettingExpensesCategoryPag
       return Center(child: CircularProgressIndicator.adaptive());
     }
 
-    if (provider.incomeCategories.isEmpty) {
+    if (provider.expensesCategories.isEmpty) {
       return Center(
         child: Text('${AppLocalizations.of(context)!.none} ${AppLocalizations.of(context)!.expensesCategory}'),
       );
@@ -64,9 +64,9 @@ class _SettingExpensesCategoryPageState extends State<SettingExpensesCategoryPag
     return RefreshIndicator.adaptive(
       onRefresh: () => provider.fetchExpensesCategories(),
       child: ListView.builder(
-        itemCount: provider.incomeCategories.length,
+        itemCount: provider.expensesCategories.length,
         itemBuilder: (context, index) {
-          final category = provider.incomeCategories[index];
+          final category = provider.expensesCategories[index];
           return _item(context, category, provider);
         },
       ),
@@ -168,7 +168,7 @@ class _SettingExpensesCategoryPageState extends State<SettingExpensesCategoryPag
                           }
 
                           if (isEdit && item != null) {
-                            final isSuccess = await provider.updateExpensesCategory(item);
+                            final isSuccess = await provider.updateExpensesCategory(item.id!);
                             if (isSuccess && context.mounted) provider.fetchExpensesCategories();
                           }
                           _nameController.clear();
@@ -195,7 +195,7 @@ class _SettingExpensesCategoryPageState extends State<SettingExpensesCategoryPag
       context: context,
       builder: (BuildContext context) {
         return AlertDialog.adaptive(
-          title: Text('${AppLocalizations.of(context)!.delete} ${AppLocalizations.of(context)!.incomeCategory}'),
+          title: Text('${AppLocalizations.of(context)!.delete} ${AppLocalizations.of(context)!.expensesCategory}'),
           content: Text(AppLocalizations.of(context)!.deleteDialogContent(item.name)),
           actions: <Widget>[
             TextButton(

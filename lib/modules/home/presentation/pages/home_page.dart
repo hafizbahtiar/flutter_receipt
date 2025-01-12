@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
 
     if (provider.incomeRecords.isEmpty) {
       return Center(
-        child: Text('${AppLocalizations.of(context)!.none} ${AppLocalizations.of(context)!.expensesCategory}'),
+        child: Text('${AppLocalizations.of(context)!.none} ${AppLocalizations.of(context)!.transaction}'),
       );
     }
 

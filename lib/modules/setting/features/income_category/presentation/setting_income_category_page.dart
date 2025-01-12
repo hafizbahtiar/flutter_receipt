@@ -168,7 +168,7 @@ class _SettingIncomeCategoryPageState extends State<SettingIncomeCategoryPage> {
                           }
 
                           if (isEdit && item != null) {
-                            final isSuccess = await provider.updateIncomeCategory(item);
+                            final isSuccess = await provider.updateIncomeCategory(item.id!);
                             if (isSuccess && context.mounted) provider.fetchIncomeCategories();
                           }
                           _nameController.clear();

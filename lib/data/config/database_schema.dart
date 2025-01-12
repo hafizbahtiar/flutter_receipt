@@ -10,58 +10,51 @@ class DatabaseSchema {
   /// Create tables and insert default categories
   static Future<void> onCreate(Database db, int version) async {
     try {
-      // Create income table
+      // Create transaction type table
       await db.execute('''
-        CREATE TABLE ${DatabaseTable.income} (
+        CREATE TABLE ${DatabaseTable.transactionType} (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          category_id INT NOT NULL,
-          amount REAL NOT NULL,
-          description TEXT,
-          created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (category_id) REFERENCES ${DatabaseTable.incomeCategory}(id)
+          name TEXT NOT NULL,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
       ''');
 
-      // Create expenses table
+      // Create category table
       await db.execute('''
-        CREATE TABLE ${DatabaseTable.expenses} (
+        CREATE TABLE ${DatabaseTable.category} (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          category_id INT NOT NULL,
-          amount REAL NOT NULL,
-          description TEXT,
+          parent_id INT NULL,
+          transaction_type_id INT NOT NULL,
+          transaction_type_name TEXT,
+          name TEXT NOT NULL,
           created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (category_id) REFERENCES ${DatabaseTable.expensesCategory}(id)
+          FOREIGN KEY (transaction_type_id) REFERENCES ${DatabaseTable.transactionType}(id)
         )
       ''');
 
-      // Create expenses images table
+      // Create transaction table
       await db.execute('''
-        CREATE TABLE ${DatabaseTable.expensesImages} (
+        CREATE TABLE ${DatabaseTable.transactionRecord} (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          expenses_id INT NOT NULL,
+          category_id INT NOT NULL,
+          transaction_type_id INT NOT NULL,
+          transaction_type_name TEXT,
+          amount REAL NOT NULL,
+          description TEXT,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (category_id) REFERENCES ${DatabaseTable.category}(id),
+          FOREIGN KEY (transaction_type_id) REFERENCES ${DatabaseTable.transactionType}(id)
+        )
+      ''');
+
+      // Create transaction images table
+      await db.execute('''
+        CREATE TABLE ${DatabaseTable.transactionImages} (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          transaction_id INT NOT NULL,
           image BLOB NOT NULL,
           created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (expenses_id) REFERENCES ${DatabaseTable.expenses}(id)
-        )
-      ''');
-
-      // Create income category table
-      await db.execute('''
-        CREATE TABLE ${DatabaseTable.incomeCategory} (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          parent_id INT NOT NULL,
-          name TEXT NOT NULL,
-          created_at TEXT DEFAULT CURRENT_TIMESTAMP
-        )
-      ''');
-
-      // Create expenses category table
-      await db.execute('''
-        CREATE TABLE ${DatabaseTable.expensesCategory} (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          parent_id INT NOT NULL,
-          name TEXT NOT NULL,
-          created_at TEXT DEFAULT CURRENT_TIMESTAMP
+          FOREIGN KEY (transaction_id) REFERENCES ${DatabaseTable.transactionRecord}(id)
         )
       ''');
 
@@ -74,34 +67,35 @@ class DatabaseSchema {
 
   /// Insert default categories into the database
   static Future<void> _insertDefaultCategories(Database db) async {
-    try {
-      await db.transaction((txn) async {
-        // Default income categories
-        final incomeCategories = [
-          {'parent_id': 0, 'name': 'allowance'},
-          {'parent_id': 0, 'name': 'salary'},
-          {'parent_id': 0, 'name': 'bonus'},
-          {'parent_id': 0, 'name': 'investment'},
-        ];
+    // Insert transaction types and get their IDs
+    final incomeTypeId = await db.insert(DatabaseTable.transactionType, {
+      'name': 'income',
+    });
+    final expensesTypeId = await db.insert(DatabaseTable.transactionType, {
+      'name': 'expenses',
+    });
 
-        // Default expenses categories
-        final expensesCategories = [
-          {'parent_id': 0, 'name': 'food'},
-          {'parent_id': 0, 'name': 'utility'},
-          {'parent_id': 0, 'name': 'transportation'},
-          {'parent_id': 0, 'name': 'entertainment'},
-        ];
+    // Define categories for income and expenses
+    final incomeCategories = ['allowance', 'salary', 'bonus', 'investment', 'freelance', 'rental income'];
+    final expensesCategories = ['food', 'utility', 'transportation', 'entertainment', 'healthcare', 'education'];
 
-        for (final category in incomeCategories) {
-          await txn.insert(DatabaseTable.incomeCategory, category);
-        }
-        for (final category in expensesCategories) {
-          await txn.insert(DatabaseTable.expensesCategory, category);
-        }
+    // Insert income categories
+    for (final category in incomeCategories) {
+      await db.insert(DatabaseTable.category, {
+        'transaction_type_id': incomeTypeId,
+        'name': category,
       });
-    } catch (e) {
-      debugPrint("Error inserting default categories: $e");
     }
+
+    // Insert expenses categories
+    for (final category in expensesCategories) {
+      await db.insert(DatabaseTable.category, {
+        'transaction_type_id': expensesTypeId,
+        'name': category,
+      });
+    }
+
+    debugPrint('Transaction types and categories initialized successfully.');
   }
 
   /// Handles schema upgrades for version changes
