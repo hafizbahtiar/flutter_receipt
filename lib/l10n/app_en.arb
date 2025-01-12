@@ -1,12 +1,40 @@
 {
     "@@locale": "en",
     "helloWorld": "Hello World!",
+    "name": "Name",
     "language": "Language",
+    "theme": "Theme",
     "add": "Add",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteDialogContent": "Are you sure you want to delete {item}?",
+    "@deleteDialogContent": {
+        "placeholders": {
+            "item": {
+                "type": "String"
+            }
+        }
+    },
+    "update": "Update",
+    "cancel": "Cancel",
     "article": "Article",
     "back": "Back",
     "setting": "Setting",
     "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "systemMode": "System Mode",
     "activate": "Activate",
-    "deactivate": "Deactivate"
+    "deactivate": "Deactivate",
+    "none": "None",
+    "mode": "Mode",
+    "tax": "Tax",
+    "income": "Income",
+    "incomeCategory": "Income Category",
+    "expenses": "Expenses",
+    "expensesCategory": "Expenses Category",
+    "category": "Category",
+    "createNew": "Create New",
+    "amount": "Amount",
+    "date": "Date"
 }

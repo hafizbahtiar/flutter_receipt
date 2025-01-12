@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_receipt/providers/user_pref_provider.dart';
+import 'package:flutter_receipt/modules/setting/presentation/setting_card.dart';
+import 'package:flutter_receipt/routes/router_name.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingPage extends StatelessWidget {
@@ -16,67 +16,80 @@ class SettingPage extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      foregroundColor: Theme.of(context).colorScheme.onPrimary,
       leading: IconButton(
+        color: Theme.of(context).colorScheme.onPrimary,
         tooltip: AppLocalizations.of(context)!.back,
-        icon: Icon(
-          Icons.arrow_back_ios_new_outlined,
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
+        icon: Icon(Icons.adaptive.arrow_back),
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
         AppLocalizations.of(context)!.setting,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
   }
 
   Widget _buildBody(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          spacing: 5.0,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.language),
-              trailing: _buildLanguageDropdown(context),
-            ),
-            ListTile(
-              title: Text(
-                Provider.of<UserPrefsProvider>(context).isDarkMode
-                    ? '${AppLocalizations.of(context)!.deactivate} ${AppLocalizations.of(context)!.darkMode}'
-                    : '${AppLocalizations.of(context)!.activate} ${AppLocalizations.of(context)!.darkMode}',
+    const divider = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 50.0),
+      child: Divider(thickness: 0.9, height: 0.5),
+    );
+
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 15.0),
+      children: <Widget>[
+        SettingCard(
+          content: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.category),
+                title: Text(AppLocalizations.of(context)!.incomeCategory),
+                onTap: () => Navigator.pushNamed(context, RouterName.settingsIncomeCategory),
+                trailing: Icon(Icons.arrow_forward_ios_outlined),
               ),
-              trailing: _buildDarkModeSwitch(context),
-            ),
-          ],
+              divider,
+              ListTile(
+                leading: Icon(Icons.category),
+                title: Text(AppLocalizations.of(context)!.expensesCategory),
+                onTap: () => Navigator.pushNamed(context, RouterName.settingsExpensesCategory),
+                trailing: Icon(Icons.arrow_forward_ios_outlined),
+              ),
+              divider,
+              ListTile(
+                leading: Icon(Icons.percent),
+                title: Text(AppLocalizations.of(context)!.tax),
+                onTap: () => Navigator.pushNamed(context, RouterName.settingsTax),
+                trailing: Icon(Icons.arrow_forward_ios_outlined),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildLanguageDropdown(BuildContext context) {
-    return DropdownButton<String>(
-      value: Provider.of<UserPrefsProvider>(context).languageCode,
-      onChanged: (value) => Provider.of<UserPrefsProvider>(context, listen: false).setLanguageCode(value!),
-      items: {'ms': 'Bahasa Melayu', 'en': 'English'}
-          .entries
-          .map((entry) => DropdownMenuItem<String>(
-                value: entry.key,
-                child: Text(entry.value),
-              ))
-          .toList(),
-    );
-  }
-
-  Widget _buildDarkModeSwitch(BuildContext context) {
-    return Switch(
-      value: Provider.of<UserPrefsProvider>(context).isDarkMode,
-      onChanged: (value) => Provider.of<UserPrefsProvider>(context, listen: false).setDarkMode(value),
+        const SizedBox(height: 10.0),
+        SettingCard(
+          content: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.language),
+                title: Text(AppLocalizations.of(context)!.language),
+                onTap: () => Navigator.pushNamed(context, RouterName.settingsLanguage),
+                trailing: Icon(Icons.arrow_forward_ios_outlined),
+              ),
+              divider,
+              ListTile(
+                leading: Icon(Icons.color_lens),
+                title: Text(AppLocalizations.of(context)!.theme),
+                onTap: () => Navigator.pushNamed(context, RouterName.settingsThemeMode),
+                trailing: Icon(Icons.arrow_forward_ios_outlined),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

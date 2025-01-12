@@ -1,67 +1,38 @@
 // Define color scheme for dark mode
 import 'package:flutter/material.dart';
-import 'package:flutter_receipt/config/themes/app_pallete.dart';
 
-IconButtonThemeData iconButtonTheme(bool isDarkMode) {
-  return IconButtonThemeData(
-    style: ButtonStyle(
-      iconColor: WidgetStateProperty.all(
-        isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight,
-      ),
-    ),
-  );
-}
-
-ElevatedButtonThemeData elevatedButtonTheme(bool isDarkMode) {
+ElevatedButtonThemeData elevatedButtonTheme() {
   return ElevatedButtonThemeData(
     style: ButtonStyle(
-      textStyle: WidgetStateProperty.all(_textStyle(isDarkMode)),
       minimumSize: WidgetStateProperty.all(const Size(20.0, 50.0)),
       shape: WidgetStateProperty.all(_roundedRectangleBorder()),
     ),
   );
 }
 
-OutlinedButtonThemeData outlinedButtonTheme(bool isDarkMode) {
+OutlinedButtonThemeData outlinedButtonTheme() {
   return OutlinedButtonThemeData(
     style: ButtonStyle(
-      textStyle: WidgetStateProperty.all(_textStyle(isDarkMode)),
-      backgroundColor: WidgetStateProperty.all(isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight),
-      foregroundColor: WidgetStateProperty.all(isDarkMode ? AppPallete.primaryDark : AppPallete.primaryLight),
       minimumSize: WidgetStateProperty.all(const Size(20.0, 50.0)),
       shape: WidgetStateProperty.all(_roundedRectangleBorder()),
-      side: WidgetStateProperty.all(
-        BorderSide(
-          width: 1.0,
-          color: isDarkMode ? AppPallete.primaryDark : AppPallete.primaryLight,
-        ),
-      ),
+      side: WidgetStateProperty.all(BorderSide(width: 1.0)),
     ),
   );
 }
 
-FilledButtonThemeData filledButtonTheme(bool isDarkMode) {
+FilledButtonThemeData filledButtonTheme() {
   return FilledButtonThemeData(
     style: ButtonStyle(
-      textStyle: WidgetStateProperty.all(_textStyle(isDarkMode)),
-      backgroundColor: WidgetStateProperty.all(isDarkMode ? AppPallete.primaryDark : AppPallete.primaryLight),
-      foregroundColor: WidgetStateProperty.all(isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight),
       minimumSize: WidgetStateProperty.all(const Size(20.0, 50.0)),
       shape: WidgetStateProperty.all(_roundedRectangleBorder()),
     ),
   );
 }
 
-TextButtonThemeData textButtonTheme(bool isDarkMode) {
+TextButtonThemeData textButtonTheme() {
   return TextButtonThemeData(
     style: TextButton.styleFrom(
-      foregroundColor: isDarkMode ? AppPallete.primaryDark : AppPallete.primaryLight,
-      textStyle: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight,
-        decoration: TextDecoration.none,
-      ),
+      textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, decoration: TextDecoration.none),
       padding: _edgeInsets(),
     ),
   );
@@ -78,16 +49,6 @@ RoundedRectangleBorder _roundedRectangleBorder() {
   );
 }
 
-TextStyle _textStyle(bool isDarkMode) {
-  return TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.bold
-  );
-}
-
 EdgeInsets _edgeInsets() {
-  return const EdgeInsets.symmetric(
-    vertical: 12.0,
-    horizontal: 16.0,
-  );
+  return const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0);
 }

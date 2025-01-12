@@ -43,25 +43,27 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 10.0,
           children: [
             ScaleTransition(
               scale: _animation,
               child: Icon(
                 Icons.flutter_dash_outlined,
                 size: 50.0,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
+            const SizedBox(height: 10.0),
             Text(
               'Flutter Receipt',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
           ],

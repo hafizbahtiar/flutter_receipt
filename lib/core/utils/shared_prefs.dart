@@ -85,8 +85,9 @@ class PrefsName {
   /// the application.
   static const String user = 'user';
   static const String token = 'token';
-  static const String isDarkMode = 'darkMode';
+  static const String themeMode = 'themeMode';
   static const String languageCode = 'languageCode';
+  static const String isSubCategory = 'isSubCategory';
 
   static String states(String countryCode) {
     return '${countryCode}State';

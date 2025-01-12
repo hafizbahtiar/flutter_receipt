@@ -25,7 +25,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final prefsWatch = Provider.of<UserPrefsProvider>(context);
+    final prefsWatch = Provider.of<UserPrefsProvider>(context, listen: true);
+    final themeMode = prefsWatch.themeMode;
 
     return MaterialApp(
       title: 'Flutter Receipt',
@@ -34,10 +35,16 @@ class _MyAppState extends State<MyApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       theme: appThemeData(context, false),
       darkTheme: appThemeData(context, true),
-      themeMode: prefsWatch.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      themeMode: themeMode,
       home: SplashPage(),
       initialRoute: '/',
       onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+          child: child!,
+        );
+      },
     );
   }
 }

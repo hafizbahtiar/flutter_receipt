@@ -5,26 +5,25 @@ class UserPrefsProvider extends ChangeNotifier {
   final prefs = SharedPrefs().prefs;
 
   // Default initial settings
-  bool _isDarkMode = false;
-  String _languageCode = 'ms'; // Default to English
+  ThemeMode _themeMode = ThemeMode.light; // Default to ThemeMode.light
+  String _languageCode = 'ms'; // Default to Malay
 
   // Getters
-  bool get isDarkMode => _isDarkMode;
+  ThemeMode get themeMode => _themeMode;
   String get languageCode => _languageCode;
 
   // Initialize provider by loading values from SharedPreferences
   Future<void> initialize() async {
-    _isDarkMode = await _getDarkModeFromPrefs();
-       debugPrint('Dark mode: $_isDarkMode');
+    _themeMode = await _getThemeModeFromPrefs();
     _languageCode = await _getLanguageCodeFromPrefs();
     notifyListeners();
   }
 
   // Setters
-  Future<void> setDarkMode(bool value) async {
-    if (_isDarkMode != value) {
-      _isDarkMode = value;
-      await _saveDarkModeToPrefs(value);
+  Future<void> setThemeMode(ThemeMode value) async {
+    if (_themeMode != value) {
+      _themeMode = value;
+      await _saveThemeModeToPrefs(value);
       notifyListeners();
     }
   }
@@ -37,16 +36,46 @@ class UserPrefsProvider extends ChangeNotifier {
     }
   }
 
-  // SharedPreferences helpers
-  Future<void> _saveDarkModeToPrefs(bool value) async {
-    debugPrint('Saving dark mode: $value');
-    await prefs?.setBool(PrefsName.isDarkMode, value);
+// SharedPreferences helpers for ThemeMode
+  Future<void> _saveThemeModeToPrefs(ThemeMode value) async {
+    debugPrint('Saving theme mode: $value');
+    await prefs?.setString(PrefsName.themeMode, themeModeToString(value)); // Save as String
   }
 
-  Future<bool> _getDarkModeFromPrefs() async {
-    return prefs?.getBool(PrefsName.isDarkMode) ?? false;
+  Future<ThemeMode> _getThemeModeFromPrefs() async {
+    final value = prefs?.getString(PrefsName.themeMode) ?? 'light'; // Default to 'light'
+    return stringToThemeMode(value); // Convert string back to ThemeMode
   }
 
+  // Helper function to convert ThemeMode to String
+  String themeModeToString(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.dark:
+        return 'dark';
+      case ThemeMode.light:
+        return 'light';
+      case ThemeMode.system:
+        return 'system';
+      default:
+        return 'light'; // Default case
+    }
+  }
+
+  // Helper function to convert String to ThemeMode
+  ThemeMode stringToThemeMode(String value) {
+    switch (value) {
+      case 'dark':
+        return ThemeMode.dark;
+      case 'light':
+        return ThemeMode.light;
+      case 'system':
+        return ThemeMode.system;
+      default:
+        return ThemeMode.light; // Default case
+    }
+  }
+
+  // SharedPreferences helpers for language code
   Future<void> _saveLanguageCodeToPrefs(String value) async {
     await prefs?.setString(PrefsName.languageCode, value);
   }

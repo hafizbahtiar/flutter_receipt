@@ -1,15 +1,13 @@
 // Define color scheme for dark mode
 import 'package:flutter/material.dart';
-import 'package:flutter_receipt/config/themes/app_pallete.dart';
 
-InputDecorationTheme inputDecoTheme(bool isDarkMode) {
+InputDecorationTheme inputDecoTheme(BuildContext context) {
   return InputDecorationTheme(
-    labelStyle: _labelTextStyle(isDarkMode),
-    hintStyle: _hintTextStyle(isDarkMode),
-    enabledBorder: _outlineEnabledBorder(isDarkMode),
-    focusedBorder: _outlineFocusedBorder(isDarkMode),
-    errorBorder: _outlineErrorBorder(isDarkMode),
-    focusedErrorBorder: _outlineErrorBorder(isDarkMode),
+    labelStyle: _labelTextStyle(),
+    enabledBorder: _outlineEnabledBorder(context),
+    focusedBorder: _outlineFocusedBorder(context),
+    errorBorder: _outlineErrorBorder(context),
+    focusedErrorBorder: _outlineErrorBorder(context),
     errorMaxLines: 2,
   );
 }
@@ -18,32 +16,23 @@ InputDecorationTheme inputDecoTheme(bool isDarkMode) {
 // MARK: - Border Styles
 // =====================================================================================
 
-OutlineInputBorder _outlineEnabledBorder(bool isDarkMode) {
+OutlineInputBorder _outlineEnabledBorder(BuildContext context) {
   return OutlineInputBorder(
-    borderSide: BorderSide(
-      color: isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight,
-      width: 1.0,
-    ),
+    borderSide: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.primary),
     borderRadius: _borderRadius(),
   );
 }
 
-OutlineInputBorder _outlineFocusedBorder(bool isDarkMode) {
+OutlineInputBorder _outlineFocusedBorder(BuildContext context) {
   return OutlineInputBorder(
-    borderSide: BorderSide(
-      color: isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight,
-      width: 1.0,
-    ),
+    borderSide: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.primary),
     borderRadius: _borderRadius(),
   );
 }
 
-OutlineInputBorder _outlineErrorBorder(bool isDarkMode) {
+OutlineInputBorder _outlineErrorBorder(BuildContext context) {
   return OutlineInputBorder(
-    borderSide: BorderSide(
-      color: isDarkMode ? AppPallete.errorDark : AppPallete.errorLight,
-      width: 1.0,
-    ),
+    borderSide: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.primary),
     borderRadius: _borderRadius(),
   );
 }
@@ -56,15 +45,6 @@ BorderRadius _borderRadius() {
 // MARK: - Text Styles
 // =====================================================================================
 
-TextStyle _labelTextStyle(bool isDarkMode) {
-  return TextStyle(
-    color: isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight,
-    fontWeight: FontWeight.bold,
-  );
-}
-
-TextStyle _hintTextStyle(bool isDarkMode) {
-  return TextStyle(
-    color: isDarkMode ? AppPallete.onBackgroundDark : AppPallete.onBackgroundLight,
-  );
+TextStyle _labelTextStyle() {
+  return TextStyle(fontWeight: FontWeight.bold);
 }
