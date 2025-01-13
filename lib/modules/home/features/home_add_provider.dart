@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_receipt/data/models/category_model.dart';
-import 'package:flutter_receipt/data/models/income_model.dart';
 import 'package:flutter_receipt/data/models/transaction_type_model.dart';
 import 'package:flutter_receipt/data/repository/category_repository.dart';
-import 'package:flutter_receipt/data/repository/income_repository.dart';
 import 'package:flutter_receipt/data/repository/transaction_record_repository.dart';
 import 'package:flutter_receipt/data/repository/transaction_type_repository.dart';
 import 'package:intl/intl.dart';
 
 class HomeAddProvider with ChangeNotifier {
-  final IncomeRepository _repository = IncomeRepository();
   final CategoryRepository _categoryRepository = CategoryRepository();
   final TransactionTypeRepository _transactionTypeRepository = TransactionTypeRepository();
   final TransactionRecordRepository _transactionRecordRepository = TransactionRecordRepository();
@@ -150,39 +147,18 @@ class HomeAddProvider with ChangeNotifier {
       return false;
     }
 
-    print('Category Id Name (income): ${_incomeCategoriesMap[int.parse(_selectedIncomeCategoryId)]}');
-    print('Category Id Name (expenses): ${_expensesCategoriesMap[int.parse(_selectedExpensesCategoryId)]}');
+    final categoryId =
+        _transactionTypeMap[_selectedIndex] == 'income' ? _selectedIncomeCategoryId : _selectedExpensesCategoryId;
 
-    // final income = IncomeModel(
-    //   categoryId: int.parse(selectedCategoryId),
-    //   amount: amount,
-    //   createdAt: _date,
-    // );
+debugPrint('Category Id: $categoryId');
+debugPrint('Category Id Name (income): ${_incomeCategoriesMap[int.parse(_selectedIncomeCategoryId)]}');
+debugPrint('Category Id Name (expenses): ${_expensesCategoriesMap[int.parse(_selectedExpensesCategoryId)]}');
 
-    // final success = await _transactionRecordRepository.createTransactionRecord(
-    //   name: name,
-    //   amount: amount,
-    //   categoryId: categoryId,
-    //   transactionTypeId: transactionTypeId,
-    // );
-    // setLoading(false);
-    // return success;
-
-    return false;
-  }
-
-  // Update an existing income record
-  Future<bool> updateIncome(IncomeModel income) async {
-    setLoading(true);
-    final success = await _repository.updateIncome(income);
-    setLoading(false);
-    return success;
-  }
-
-  // Delete an income record
-  Future<bool> deleteIncome(int id) async {
-    setLoading(true);
-    final success = await _repository.deleteIncome(id);
+    final success = await _transactionRecordRepository.createTransactionRecord(
+      amount: amount,
+      categoryId: int.parse(categoryId),
+      transactionTypeId: _selectedIndex,
+    );
     setLoading(false);
     return success;
   }

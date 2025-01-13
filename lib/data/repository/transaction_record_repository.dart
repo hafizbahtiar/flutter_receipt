@@ -2,8 +2,7 @@ import 'package:flutter_receipt/data/models/transaction_record_model.dart';
 import 'package:flutter_receipt/data/services/transaction_record_database.dart';
 
 class TransactionRecordRepository {
-  Future<int> createTransactionRecord({
-    required String name,
+  Future<bool> createTransactionRecord({
     required double amount,
     required int categoryId,
     required int transactionTypeId,
@@ -11,14 +10,14 @@ class TransactionRecordRepository {
     int parentId = 0,
     String? createdAt,
   }) async {
-    return await TransactionRecordDatabase.createTransactionRecord(
-      name: name,
+    final result = await TransactionRecordDatabase.createTransactionRecord(
       transactionTypeId: transactionTypeId,
-      transactionTypeName: transactionTypeName!,
+      transactionTypeName: transactionTypeName ?? '',
       createdAt: createdAt,
       categoryId: categoryId,
       amount: amount,
     );
+    return result > 0;
   }
 
   Future<List<TransactionRecordModel>> getAllTransactionRecords() async {
@@ -53,6 +52,10 @@ class TransactionRecordRepository {
 
   Future<int> deleteTransactionRecord(int id) async {
     return await TransactionRecordDatabase.deleteTransactionRecord(id);
+  }
+
+  Future<List<TransactionRecordModel>> getAllTransactions() async {
+    return await TransactionRecordDatabase.getAllTransactionRecords();
   }
 
   /// Retrieve subcategories for a specific parent category

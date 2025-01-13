@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_receipt/core/constants/hero_tag.dart';
-import 'package:flutter_receipt/data/models/income_model.dart';
+import 'package:flutter_receipt/data/models/transaction_record_model.dart';
 import 'package:flutter_receipt/modules/home/providers/home_provider.dart';
 import 'package:flutter_receipt/routes/router_name.dart';
 import 'package:provider/provider.dart';
@@ -57,18 +57,18 @@ class _HomePageState extends State<HomePage> {
       return Center(child: CircularProgressIndicator.adaptive());
     }
 
-    if (provider.incomeRecords.isEmpty) {
+    if (provider.transactionRecords.isEmpty) {
       return Center(
         child: Text('${AppLocalizations.of(context)!.none} ${AppLocalizations.of(context)!.transaction}'),
       );
     }
 
     return RefreshIndicator.adaptive(
-      onRefresh: () => provider.fetchAllIncome(),
+      onRefresh: () => provider.fetchAllTransactionRecord(),
       child: ListView.builder(
-        itemCount: provider.incomeRecords.length,
+        itemCount: provider.transactionRecords.length,
         itemBuilder: (context, index) {
-          final category = provider.incomeRecords[index];
+          final category = provider.transactionRecords[index];
           return _item(context, category, provider);
         },
       ),
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
       heroTag: HeroTag.createNew,
       onPressed: () async {
         final isRefresh = await Navigator.pushNamed(context, RouterName.homeAdd) as bool? ?? false;
-        if (isRefresh) provider.fetchAllIncome();
+        if (isRefresh) provider.fetchAllTransactionRecord();
       },
       child: const Icon(Icons.create),
     );
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _item(
     BuildContext context,
-    IncomeModel item,
+    TransactionRecordModel item,
     HomeProvider provider,
   ) {
     return ListTile(
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<dynamic> _showDeleteDialog(
     BuildContext context,
-    IncomeModel item,
+    TransactionRecordModel item,
     HomeProvider provider,
   ) {
     return showDialog(
@@ -132,11 +132,7 @@ class _HomePageState extends State<HomePage> {
                   color: Theme.of(context).colorScheme.error,
                 ),
               ),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                await provider.deleteIncome(item.id!);
-                provider.fetchAllIncome();
-              },
+              onPressed: () async {},
             ),
           ],
         );
